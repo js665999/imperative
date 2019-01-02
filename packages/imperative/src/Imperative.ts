@@ -19,16 +19,6 @@ import { PerfTiming } from "@zowe/perf-timing";
 if (PerfTiming.isEnabled) {
     // These are expensive operations so imperative should
     // only do it when performance is enabled.
-
-    // PerfTiming.getApi().mark("test1");
-    // PerfTiming.getApi().mark("test2");
-    // PerfTiming.getApi().measure("test", "test1", "test2");
-    //
-    // PerfTiming.getApi().mark("test3");
-    // PerfTiming.getApi().mark("test4");
-    // PerfTiming.getApi().measure("test5", "test3", "test4");
-    // PerfTiming.getApi().measure("test", "test3", "test4");
-
     const Module = require("module");
 
     // Store the reference to the original require.
@@ -36,7 +26,7 @@ if (PerfTiming.isEnabled) {
 
     // Timerify a wrapper named function so we can be sure that not just
     // any anonymous function gets checked.
-    Module.prototype.require = PerfTiming.getApi().timerify(function NodeModuleLoader() {
+    Module.prototype.require = PerfTiming.api.watch(function NodeModuleLoader() {
         return originalRequire.apply(this, arguments);
     });
 }
