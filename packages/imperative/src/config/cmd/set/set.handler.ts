@@ -21,11 +21,6 @@ import { AppSettings } from "../../../../../settings/src/AppSettings";
  */
 export default class SetHandler implements ICommandHandler {
 
-    /*
-     * A variable with which to compare the input of the set command for the switch
-     */
-    private static CONFIG_CREGENTIAL_MANAGER: string = "credential-manager";
-
     /**
      * A logger for this class
      *
@@ -42,27 +37,7 @@ export default class SetHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public async process(params: IHandlerParameters): Promise<void> {
-
-        switch(params.arguments.configName){
-        case SetHandler.CONFIG_CREGENTIAL_MANAGER:
-            this.overrideCredentialManager(params.arguments.configValue);
-            break;
-        default :
-            throw new ImperativeError({
-            msg: "The setting you tried to change does not exist.",
-            additionalDetails: JSON.stringify(params)
-            });
-        }
-    }
-
-    /**
-     * Override the credential manager with the string provided.
-     *
-     * @param {string} value - new credential manager value to be set
-     *
-     * @throws {ImperativeError}
-     */
-    private async overrideCredentialManager(value: string) {
-        await AppSettings.instance.setNewOverride("CredentialManager", value);
+        const {configName, configValue} = params.arguments;
+        AppSettings.instance.set("overrides", configName, configValue);
     }
 }

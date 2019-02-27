@@ -16,10 +16,10 @@ import { AppSettings } from "../../../../../settings/src/AppSettings";
 
 
 /**
- * The command group handler for cli configuration settings reset.
+ * The list command group handler for cli configuration settings.
  *
  */
-export default class ResetHandler implements ICommandHandler {
+export default class ListHandler implements ICommandHandler {
 
     /**
      * A logger for this class
@@ -37,7 +37,11 @@ export default class ResetHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public async process(params: IHandlerParameters): Promise<void> {
-        const {configName} = params.arguments;
-        AppSettings.instance.set("overrides", configName, false);
+        const {values} = params.arguments;
+        const overrides = AppSettings.instance.getNamespace("overrides");
+
+        Object.keys(overrides)
+            .map((key) =>  values ? `${key} = ${overrides[key]}` : key)
+            .forEach(console.log);
     }
 }
