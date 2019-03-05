@@ -42,6 +42,6 @@ export default class ListHandler implements ICommandHandler {
 
         Object.keys(overrides)
             .map((key) =>  values ? `${key} = ${overrides[key]}` : key)
-            .forEach(console.log);
+            .forEach(params.response.console.log);
     }
 }

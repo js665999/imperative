@@ -15,6 +15,8 @@ import { ISettingsFile } from "./doc/ISettingsFile";
 import { Logger } from "../../logger";
 import { ISettingsFilePersistence } from "./persistance/ISettingsFilePersistence";
 import { JSONSettingsFilePersistence } from "./persistance/JSONSettingsFilePersistence";
+import { IO } from "../../io";
+import { ImperativeError } from "../../error";
 
 type SettingValue = false | string;
 
@@ -47,7 +49,7 @@ export class AppSettings {
         } catch (up) {
             if (!existsSync(settingsFile)) {
                 Logger.getImperativeLogger().trace("Executing missing file recovery.");
-
+                IO.createDirsSyncFromFilePath(settingsFile);
                 persistence.write(defaults);
             } else {
                 Logger.getImperativeLogger().error("Unable to recover from load failure");
@@ -71,6 +73,7 @@ export class AppSettings {
 
         return AppSettings.mInstance;
     }
+
     /**
      * This is an internal reference to the static settings instance.
      */
@@ -119,28 +122,52 @@ export class AppSettings {
         return !(this.mInstance == null);
     }
 
+    /**
+     * Set a settings option and save it to the settings file.
+     * @param namespace {@link ISettingsFile}
+     * @param key Name of a setting option to set
+     * @param value
+     */
     public set(namespace: keyof ISettingsFile, key: string, value: SettingValue): void {
         this.settings[namespace][key] = value;
 
         this.flush();
     }
 
+    /**
+     * Get a value of settings option
+     * @param namespace {@link ISettingsFile}
+     * @param key Name of a setting option to set
+     */
     public get(namespace: keyof ISettingsFile, key: string): SettingValue {
-        return this.settings[namespace][key];
+        if (this.settings[namespace]) {
+            return this.settings[namespace][key];
+        }
+        throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
     }
 
+    /**
+     * Get a member of ISettingsFile of specified namespace
+     * @param namespace
+     */
     public getNamespace(namespace: keyof ISettingsFile) {
         return this.settings[namespace];
     }
 
-    public getSettings() {
+    /**
+     * Get settings
+     */
+    public getSettings(): ISettingsFile {
         return this.settings;
     }
 
+    /**
+     * Writes settings to the file
+     */
     private flush() {
         try {
             this.persistence.write(this.settings);
-        } catch(err) {
+        } catch (err) {
             Logger.getImperativeLogger().error("Unable to save settings");
             Logger.getImperativeLogger().error(err.toString());
 

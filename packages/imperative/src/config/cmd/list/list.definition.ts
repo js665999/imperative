@@ -27,7 +27,7 @@ export const listDefinition: ICommandDefinition = {
         {
         name: "values",
         type: "boolean",
-        description: "Show current values for every option",
+        description: "Show values for every option",
         },
     ],
     examples: [

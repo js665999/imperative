@@ -76,6 +76,7 @@ export class ConfigManagementFacility {
                 require("./cmd/set/set.definition").setDefinition,
                 require("./cmd/reset/reset.definition").resetDefinition,
                 require("./cmd/list/list.definition").listDefinition,
+                require("./cmd/get/get.definition").getDefinition,
             ]
         });
 

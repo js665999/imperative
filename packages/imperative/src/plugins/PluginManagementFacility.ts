@@ -272,7 +272,6 @@ export class PluginManagementFacility {
                 Logger.getImperativeLogger().debug(
                     `PluginOverride: Attempting to overwrite "${setting}" with value provided by plugin "${pluginName}"`
                 );
-
                 if (!loadedOverrides.hasOwnProperty(pluginName)) {
                     // the plugin name specified in our settings is not available
                     const overrideErrMsg = `You attempted to override the "${setting}" setting ` +
