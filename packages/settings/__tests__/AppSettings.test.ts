@@ -53,7 +53,7 @@ const exposeAppSettingsInternal = (settings: AppSettings): IAppSettingsAllMethod
 
 describe("AppSettings", () => {
     const mocks = {
-        existsSync: existsSync as Mock<typeof existsSync>,
+        existsSync: existsSync as unknown as Mock<typeof existsSync>,
         writeFile: writeFile as Mock<typeof writeFile>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>
@@ -78,7 +78,7 @@ describe("AppSettings", () => {
         });
 
         it("should error when initialized more than once", () => {
-            mocks.readFileSync.mockReturnValueOnce(defaultSettings);
+            mocks.readFileSync.mockReturnValueOnce(defaultSettings as any);
 
             AppSettings.initialize("test.json",defaultSettings);
 
@@ -90,7 +90,7 @@ describe("AppSettings", () => {
 
     describe("constructing class scenarios", () => {
         it("should return the correct instance", () => {
-            mocks.readFileSync.mockReturnValueOnce(defaultSettings);
+            mocks.readFileSync.mockReturnValueOnce(defaultSettings as any);
 
             const appSettingsInstance = AppSettings.initialize("test.json",defaultSettings);
 
@@ -99,7 +99,7 @@ describe("AppSettings", () => {
 
         it("should merge settings provided from the file", () => {
             // An array of test scenario objects.
-            const scenarios: Array<{provided: object, expected: object}> = [
+            const scenarios: Array<{ provided: object, expected: object }> = [
                 {
                     provided: {overrides: {CredentialManager: "test-1"}},
                     expected: {
@@ -155,7 +155,7 @@ describe("AppSettings", () => {
             ];
 
             for (const scenario of scenarios) {
-                mocks.readFileSync.mockReturnValueOnce(scenario.provided);
+                mocks.readFileSync.mockReturnValueOnce(scenario.provided as any);
 
                 AppSettings.initialize("file", defaultSettings);
                 exposeAppSettingsInternal(AppSettings.instance).flush();
@@ -180,7 +180,7 @@ describe("AppSettings", () => {
         };
 
         beforeAll(() => {
-            mocks.readFileSync.mockReturnValue(defaultSettings);
+            mocks.readFileSync.mockReturnValue(defaultSettings as any);
         });
 
         const fileName = "test.json";
@@ -188,7 +188,7 @@ describe("AppSettings", () => {
         it("should write to a settings file", async () => {
             mocks.writeFileSync.mockReset();
             mocks.readFileSync.mockClear();
-            mocks.readFileSync.mockReturnValueOnce(defaultSettings);
+            mocks.readFileSync.mockReturnValueOnce(defaultSettings as any);
             AppSettings.initialize(fileName, defaultSettings);
             exposeAppSettingsInternal(AppSettings.instance).flush();
 
@@ -203,7 +203,7 @@ describe("AppSettings", () => {
                 abcd: "test"
             };
 
-            mocks.readFileSync.mockReturnValueOnce(testLoadSettings);
+            mocks.readFileSync.mockReturnValueOnce(testLoadSettings as any);
 
             AppSettings.initialize(fileName, defaultSettings);
             exposeAppSettingsInternal(AppSettings.instance).flush();
